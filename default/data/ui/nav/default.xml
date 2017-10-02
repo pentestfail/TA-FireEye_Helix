@@ -1,0 +1,10 @@
+<nav search_view="search" color="#565656">
+  <view name="helix_status" default="true" />
+  <view name="helix_alerts" />
+  <view name="helix_incidents" />
+  <view name="search" label="Search"/>
+  <collection label="Setup">
+    <view name="inputs" />
+    <view name="configuration" />
+  </collection>
+</nav>

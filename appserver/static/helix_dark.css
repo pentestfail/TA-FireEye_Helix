@@ -1,0 +1,86 @@
+/* DARK BACKGROUND */
+body,
+.dashboard-body {
+    background: #333;
+}
+
+.dashboard-panel,
+footer {
+    background: #333 !important;
+    padding: 5px;
+    border: 2px solid #111;
+}
+
+.dashboard-header h2 {
+    color: #ccc;
+    font-weight: inherit;
+}
+
+.panel-title {
+    background: #222;
+    font-weight: bold !important;
+}
+.dashboard-panel .dashboard-form-fieldset {
+    background: #222;
+}
+
+/* Removes padding from dropdown inputs to compress UI. */
+.fieldset .input .splunk-choice-input {
+    padding-bottom: 0px;
+}
+
+/* LIGHT TEXT */
+a.hide-global-filters,
+p.description,
+p.copyright,
+.dashboard-panel h2,
+.panel-head h3,
+.nav-footer>li>a,
+.form-settings,
+.dashboard-panel input,
+.input label,
+.html {
+    color: #40a9b9 !important;
+}
+
+/* TABLE */
+.table>thead>tr>th {
+    background-image: linear-gradient(to bottom, #888, #666);
+    color: white !important;
+    text-shadow: none;
+}
+.table>thead>tr>th:hover {
+    background-image: linear-gradient(to bottom, #666, #444) !important;
+    color: white !important;
+    text-shadow: none;
+}
+.table .sorts a {
+    text-decoration: none;
+    color: #111;
+}
+.table>tbody>tr>td {
+    color: #ccc;
+}
+.table>tbody>tr:not(.highlighted)>td:not(.highlighted) {
+    background-color: #444;
+}
+
+/* SVG */
+.highcharts-container svg {
+    background: #666;
+}
+.highcharts-container svg>rect:not(.block-background) {
+    fill: #000 !important;
+    opacity: 0.1;
+}
+.highcharts-container svg text:not(.single-result):not(.delta-label) {
+    fill: #ccc !important;
+}
+
+/* EDIT PANELS */
+.dashboard-panel input {
+    background-color: #444;
+}
+.drag-handle a.delete-panel {
+    background: #000 !important;
+}

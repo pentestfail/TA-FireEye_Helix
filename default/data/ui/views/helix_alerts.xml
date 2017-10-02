@@ -1,0 +1,235 @@
+<form stylesheet="helix_dark.css">
+  <label>Helix Alerts</label>
+  <description>Provides overview &amp; simple filtering of Helix alerting.</description>
+  <search id="helix_alerts">
+    <query>`helix-alerts(*,*,*,*,*)`</query>
+    <earliest>$time.earliest$</earliest>
+    <latest>$time.latest$</latest>
+  </search>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="time" searchWhenChanged="true">
+      <label>Time</label>
+      <default>
+        <earliest>-7d@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Open Alerts</title>
+      <single>
+        <search base="helix_alerts">
+          <query>| timechart count AS total | append [search `helix-alerts("Open","*","*","*","*")` | stats count AS total]</query>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="height">125</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x40a9b9","0xd55555"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="underLabel">OPEN ALERTS</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Risk</title>
+      <chart>
+        <search base="helix_alerts">
+          <query>| stats count by risk</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">125</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.fieldColors">{"Low": 0x98deff,"Medium": 0xf9ff0d,"High": 0xfda100,"Critical": 0xd55555}</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Type</title>
+      <chart>
+        <search base="helix_alerts">
+          <query>| top alertType</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">125</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.fieldColors">{"customer_rule": 0x40a9b9,"fireeye_rule": 0xc2b9fd}</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Alerts Timeline</title>
+      <chart>
+        <search base="helix_alerts">
+          <query>| timechart count</query>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">-45</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="height">175</option>
+        <option name="charting.fieldColors">{"count": 0xd55555}</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Alerts Detail</title>
+      <input type="dropdown" token="state" searchWhenChanged="true">
+        <label>Status</label>
+        <choice value="*">Any</choice>
+        <default>Open</default>
+        <initialValue>Open</initialValue>
+        <fieldForLabel>state</fieldForLabel>
+        <fieldForValue>state</fieldForValue>
+        <search base="helix_alerts">
+          <query>| dedup state | fields state</query>
+        </search>
+      </input>
+      <input type="dropdown" token="alertType" searchWhenChanged="true">
+        <label>Alert Type</label>
+        <choice value="*">Any</choice>
+        <default>*</default>
+        <initialValue>*</initialValue>
+        <fieldForLabel>alertType</fieldForLabel>
+        <fieldForValue>alertType</fieldForValue>
+        <search base="helix_alerts">
+          <query>| dedup alertType | fields alertType</query>
+        </search>
+      </input>
+      <input type="dropdown" token="risk" searchWhenChanged="true">
+        <label>Risk</label>
+        <choice value="*">Any</choice>
+        <default>*</default>
+        <initialValue>*</initialValue>
+        <fieldForLabel>risk</fieldForLabel>
+        <fieldForValue>risk</fieldForValue>
+        <search base="helix_alerts">
+          <query>| dedup risk | fields risk</query>
+        </search>
+      </input>
+      <input type="dropdown" token="severity" searchWhenChanged="true">
+        <label>Severity</label>
+        <choice value="*">Any</choice>
+        <default>*</default>
+        <initialValue>*</initialValue>
+        <fieldForLabel>severity</fieldForLabel>
+        <fieldForValue>severity</fieldForValue>
+        <search base="helix_alerts">
+          <query>| dedup severity | sort severity</query>
+        </search>
+      </input>
+      <input type="dropdown" token="suppressed" searchWhenChanged="true">
+        <label>Suppressed</label>
+        <choice value="*">Any</choice>
+        <default>*</default>
+        <initialValue>*</initialValue>
+        <fieldForLabel>suppressed</fieldForLabel>
+        <fieldForValue>suppressed</fieldForValue>
+        <search base="helix_alerts">
+          <query>| dedup suppressed | fields suppressed</query>
+        </search>
+      </input>
+      <table>
+        <search>
+          <query>`helix-alerts($state$, $alertType$, $risk$, $severity$, $suppressed$)` | table id, helix_environment, helix_instance, displayId, createDate, triggerId, message, state, suppressed, alertType, risk, severity, tags{} | sort - displayId</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="state">
+          <colorPalette type="map">{"Closed":#40A9B9,"Open":#D55555}</colorPalette>
+        </format>
+        <format type="color" field="suppressed">
+          <colorPalette type="map">{"true":#40A9B9}</colorPalette>
+        </format>
+        <format type="color" field="risk">
+          <colorPalette type="map">{"Low":#40A9B9,"Medium":#F9FF0D,"High":#FDA100,"Critical":#D55555}</colorPalette>
+        </format>
+        <format type="color" field="severity">
+          <colorPalette type="map">{"Low":#40A9B9,"Medium":#F9FF0D,"High":#FDA100,"Critical":#D55555}</colorPalette>
+        </format>
+        <fields>["displayId","createDate","triggerId","message","state","suppressed","alertType","risk","severity","tags{}"]</fields>
+        <drilldown>
+          <link target="_blank">https://$row.helix_environment$.fireeye.com/helix/id/$row.helix_instance$/alerts/$row.id$/details</link>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+</form>

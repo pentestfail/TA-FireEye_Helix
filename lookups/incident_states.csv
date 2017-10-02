@@ -1,0 +1,6 @@
+order,status,closed,description,example
+1,Declared,No,"Identifies concern or something that needs watching or further investigation.","Choose Declared to recognize and validate the incident."
+2,Scoped,No,"How bad is this incident? Scoped indicates an additional level of investigation and validation has been done.","For example, determine how many hosts and/or users are affected, or what data might have been compromised."
+3,Contained,No,"After declaring and scoping an incident, steps should be taken to keep the problem from escalating while it's being resolved.","Examples of containment are cutting off the adversary C2 channels with firewall rules, disabling accounts, and/or turning off switchports to compromised servers."
+4,Recovered,Yes,"Recovery involves doing whatever is necessary to get back into production service.","Examples of actions during recovery are resetting compromised passwords or reimaging hosts. Mark an incident recovered when you are fully back online and the security problem is resolved."
+5,Improved,Yes,"Use the knowledge gathered during an investigation and its resolution to improve your process.","Example of steps during an improved phase include doing a root cause analysis perhaps using TAP searches and communicating the case and its resolution to stakeholders."

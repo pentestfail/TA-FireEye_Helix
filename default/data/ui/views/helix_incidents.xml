@@ -1,0 +1,251 @@
+<form stylesheet="helix_dark.css">
+  <label>Helix Incidents</label>
+  <description>Provides overview &amp; simple filtering of Helix incidents.</description>
+  <search id="helix_incidents">
+    <query>`helix-incidents(*,*,*,*)`</query>
+    <earliest>$time.earliest$</earliest>
+    <latest>$time.latest$</latest>
+  </search>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="time" searchWhenChanged="true">
+      <label>Time</label>
+      <default>
+        <earliest>-30d@d</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Open Incidents</title>
+      <single>
+        <search base="helix_incidents">
+          <query>| timechart count AS total | append [search `helix-incidents(*,*,*,"no")` | stats count AS total]</query>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="height">125</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x40a9b9","0xd55555"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="underLabel">OPEN INCIDENTS</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Closed Incidents</title>
+      <single>
+        <search base="helix_incidents">
+          <query>| timechart count AS total | append [search `helix-incidents(*,*,*,"yes")` | stats count AS total]</query>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="height">125</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0xd55555","0x40a9b9"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="underLabel">CLOSED INCIDENTS</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Average Days to Close</title>
+      <single>
+        <search>
+          <query>`helix-incidents(*,*,*,*)`| timechart avg(daysToClose) AS avg</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x40a9b9","0xd55555"]</option>
+        <option name="rangeValues">[7]</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="trendInterval">-120d</option>
+        <option name="underLabel">AVERAGE DAYS TO CLOSE</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+        <option name="height">125</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Priority</title>
+      <chart>
+        <search base="helix_incidents">
+          <query>| stats count by priority</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">125</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.fieldColors">{"Low": 0x98deff,"Medium": 0xf9ff0d,"High": 0xfda100,"Critical": 0xd55555}</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Classifications</title>
+      <chart>
+        <search base="helix_incidents">
+          <query>| top classification useother=f</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">125</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Incidents Detail</title>
+      <input type="dropdown" token="status" searchWhenChanged="true">
+        <label>Status</label>
+        <choice value="*">Any</choice>
+        <default>*</default>
+        <initialValue>*</initialValue>
+        <fieldForLabel>status</fieldForLabel>
+        <fieldForValue>status</fieldForValue>
+        <search base="helix_incidents">
+          <query>| dedup status | fields status</query>
+        </search>
+        <change>
+          <condition value="*">
+            <set token="form.closed">*</set>
+          </condition>
+          <condition value="Contained">
+            <set token="form.closed">yes</set>
+          </condition>
+          <condition value="Improved">
+            <set token="form.closed">yes</set>
+          </condition>
+        </change>
+      </input>
+      <input type="dropdown" token="closed" searchWhenChanged="true">
+        <label>Closed</label>
+        <choice value="*">Any</choice>
+        <default>No</default>
+        <initialValue>no</initialValue>
+        <fieldForLabel>closed</fieldForLabel>
+        <fieldForValue>closed</fieldForValue>
+        <search base="helix_incidents">
+          <query>| dedup closed | sort closed</query>
+        </search>
+      </input>
+      <input type="dropdown" token="priority" searchWhenChanged="true">
+        <label>Priority</label>
+        <choice value="*">Any</choice>
+        <default>*</default>
+        <initialValue>*</initialValue>
+        <fieldForLabel>priority</fieldForLabel>
+        <fieldForValue>priority</fieldForValue>
+        <search base="helix_incidents">
+          <query>| dedup priority | fields priority</query>
+        </search>
+      </input>
+      <input type="dropdown" token="classification" searchWhenChanged="true">
+        <label>Classification</label>
+        <choice value="*">Any</choice>
+        <default>*</default>
+        <initialValue>*</initialValue>
+        <fieldForLabel>classification</fieldForLabel>
+        <fieldForValue>classification</fieldForValue>
+        <search base="helix_incidents">
+          <query>| dedup classification | fields classification</query>
+        </search>
+      </input>
+      <table>
+        <search>
+          <query>`helix-incidents($status$, $priority$, $classification$, $closed$)` | eval daysToClose=round(daysToClose) | table helix_environment, helix_instance, id, displayId, priority, createDate, name, closed, status, daysToClose, updateDate, eventCount, tags{} | sort - displayId</query>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="closed">
+          <colorPalette type="map">{"Yes":#40A9B9,"No":#D55555}</colorPalette>
+        </format>
+        <format type="color" field="suppressed">
+          <colorPalette type="map">{"true":#F7BC38}</colorPalette>
+        </format>
+        <format type="color" field="priority">
+          <colorPalette type="map">{"Low":#40A9B9,"Medium":#F9FF0D,"High":#FDA100,"Critical":#D55555}</colorPalette>
+        </format>
+        <format type="color" field="severity">
+          <colorPalette type="map">{"Low":#40A9B9,"Medium":#F9FF0D,"High":#FDA100}</colorPalette>
+        </format>
+        <format type="color" field="status">
+          <colorPalette type="map">{"Declared":#FDA100,"Scoped":#F9FF0D,"Contained":#98DEFF,"Recovered":#7AFFD8,"Improved":#40A9B9}</colorPalette>
+        </format>
+        <fields>["displayId","createDate","closed","status","name","priority","daysToClose","updateDate","eventCount","tags{}"]</fields>
+        <drilldown>
+          <link target="_blank">https://$row.helix_environment$.fireeye.com/helix/id/$row.helix_instance$/incidents/$row.id$/events</link>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+</form>

@@ -1,0 +1,159 @@
+<dashboard hideEdit="true" stylesheet="helix_dark.css">
+  <label>Helix Status</label>
+  <description>Provides overview of alert &amp; incident status in Helix.</description>
+  <search id="helix_alerts">
+    <query>`helix-alerts("*","*","*","*","*")`</query>
+    <earliest>0</earliest>
+    <latest></latest>
+    <sampleRatio>1</sampleRatio>
+    <refresh>30s</refresh>
+    <refreshType>delay</refreshType>
+  </search>
+  <search id="helix_incidents">
+    <query>`helix-incidents("*","*","*","*")`</query>
+    <earliest>0</earliest>
+    <latest></latest>
+    <sampleRatio>1</sampleRatio>
+    <refresh>30s</refresh>
+    <refreshType>delay</refreshType>
+  </search>
+  <row>
+    <panel>
+      <single>
+        <search base="helix_alerts">
+          <query>| timechart count AS total | append [search `helix-alerts("Open","*","*","*","*")` | stats count AS total]</query>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x40a9b9","0xd55555"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="underLabel">OPEN ALERTS</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <search base="helix_incidents">
+          <query>| timechart count AS total | append [search `helix-incidents(*,*,*,"no")` | stats count AS total]</query>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x40a9b9","0xd55555"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">none</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="underLabel">OPEN INCIDENTS</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Top Alerts (7days)</title>
+      <chart>
+        <search>
+          <query>`helix-alerts(*,*,*,*,*)` | top message</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="height">158</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Incidents by Status</title>
+      <table>
+        <search base="helix_incidents">
+          <query>|  top closed,status | fieldformat percent=tostring(round(percent))+"%" | sort closed</query>
+        </search>
+        <option name="count">50</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="closed">
+          <colorPalette type="map">{"Yes":#40A9B9,"No":#D55555}</colorPalette>
+        </format>
+        <format type="color" field="status">
+          <colorPalette type="map">{"Declared":#FDA100,"Scoped":#F9FF0D,"Contained":#98DEFF,"Recovered":#7AFFD8,"Improved":#40A9B9}</colorPalette>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Open Alerts</title>
+      <table>
+        <search>
+          <query>`helix-alerts("Open", "*", "*", "*", "*")` | table id, helix_environment, helix_instance, displayId, createDate, triggerId, message, state, suppressed, alertType, risk, severity, tags{} | sort - displayId</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="state">
+          <colorPalette type="map">{"Closed":#40A9B9,"Open":#D55555}</colorPalette>
+        </format>
+        <format type="color" field="suppressed">
+          <colorPalette type="map">{"true":#40A9B9}</colorPalette>
+        </format>
+        <format type="color" field="risk">
+          <colorPalette type="map">{"Low":#40A9B9,"Medium":#F9FF0D,"High":#FDA100,"Critical":#D55555}</colorPalette>
+        </format>
+        <format type="color" field="severity">
+          <colorPalette type="map">{"Low":#40A9B9,"Medium":#F9FF0D,"High":#FDA100,"Critical":#D55555}</colorPalette>
+        </format>
+        <fields>["displayId","createDate","state","triggerId","message","suppressed","alertType","risk","severity","tags{}"]</fields>
+        <drilldown>
+          <link target="_blank">https://$row.helix_environment$.fireeye.com/helix/id/$row.helix_instance$/alerts/$row.id$/details</link>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+</dashboard>
